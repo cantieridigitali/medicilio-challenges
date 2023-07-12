@@ -21,4 +21,5 @@ The company decided to start aggregating comments from different source and now 
 - Performance
 - Reusability
 
-2. Create a PR pointing to master and send link via email to `joerg@cantieridigitali.eu`
+2. Mock the data comming from the sources
+3. Create a PR pointing to master and send link via email to `joerg@cantieridigitali.eu`
