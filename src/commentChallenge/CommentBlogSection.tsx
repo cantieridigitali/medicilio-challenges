@@ -64,7 +64,7 @@ const CommentBlogSection: React.FC = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        setError('Error fetching data.');
+        setError('Uppps looks like you need to start with a mock ;) ');
         setIsLoading(false);
       })
   }, []);
