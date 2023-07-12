@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-
-// Task:
-// Your task is to create a reusable component that will be used to show comments on a blog post. 
-// However, the component should be flexible enough to be used in other places on the platform as well and it can be displayed 
-// in various different design forms.
-// Component Requirements:
-// 1. Reusable component to show comments wherever we want on the platform
-// 2. Comments will be used and displayed in various different design forms on the platform
-// 3. Platform differenciates between mobile and desktop view in all components
-// 4. Only show comments when both, user and comment data, is available
 const CommentBlogSection: React.FC = () => {
   const [data, setData] = useState<{
     id: string;
@@ -68,7 +58,7 @@ const CommentBlogSection: React.FC = () => {
         const serializedResponse = additionalData.map((item: any) => ({
           id: item.id,
           content: item.content,
-          source: 'reddit',
+          source: 'twitter',
         }));
         setData((prevData: any) => [...prevData, ...serializedResponse]);
         setIsLoading(false);
