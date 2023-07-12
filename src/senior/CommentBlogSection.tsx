@@ -30,10 +30,16 @@ const CommentBlogSection: React.FC = () => {
   const sourceRedditUrl = 'https://api.reddit.com/comments'; // Constant for API URL
   const sourceTwitterUrl = 'https://api.twitter.com/comments'; // Constant for API URL
 
-  const fetchData = async () => {
+  const fetchRedditData = async () => {
     const response = await fetch(sourceRedditUrl);
+
     const result = await response.json();
-    return result;
+    const serializedResponse = result.map((item: any) => ({
+      id: item.id,
+      content: item.content,
+      source: 'reddit',
+    }));
+    return serializedResponse;
   };
 
   const sortData = (data: any) => {
@@ -52,14 +58,19 @@ const CommentBlogSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchData()
+    fetchRedditData()
       .then((result) => {
-        setUser(result);
+        setData(result);
         return fetch(`${sourceTwitterUrl}`);
       })
       .then((response) => response.json())
       .then((additionalData) => {
-        setData((prevData: any) => [...prevData, ...additionalData]);
+        const serializedResponse = additionalData.map((item: any) => ({
+          id: item.id,
+          content: item.content,
+          source: 'reddit',
+        }));
+        setData((prevData: any) => [...prevData, ...serializedResponse]);
         setIsLoading(false);
       })
       .catch((error) => {
