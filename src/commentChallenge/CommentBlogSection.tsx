@@ -17,8 +17,8 @@ const CommentBlogSection: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  const sourceRedditUrl = 'https://api.reddit.com/comments'; // Constant for API URL
-  const sourceTwitterUrl = 'https://api.twitter.com/comments'; // Constant for API URL
+  const sourceRedditUrl = 'http://localhost:3001/reddit'; // Constant for API URL
+  const sourceTwitterUrl = 'http://localhost:3001/twitter'; // Constant for API URL
 
   const fetchRedditData = async () => {
     const response = await fetch(sourceRedditUrl);

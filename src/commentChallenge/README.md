@@ -54,3 +54,9 @@ come up with a solution based on the requirement presented above. In particulare
 2. Make sure the comment component for blog post can be visible when running `npm run start` and shows the desired information
 3. Refactor the component `CommentBlogSection`in an optimized way so that it best fits the mission and requirements and optimal for perofrmance
 4. Create a PR pointing to master and send link via email to `joerg@cantieridigitali.eu`
+
+---
+
+# Parker's Notes:
+
+1. Set up mock using `json-server`, made fake data and stored it in `db.json`. Start the mock server with `npx json-server --port 3001 --watch db.json`.
