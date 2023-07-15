@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { deleteComment, editComment, listComments } from '../services/comments';
 import styles from "./CommentBlogSection.module.scss"
-
-const sourceRedditUrl = 'http://localhost:3001/reddit'; // Constant for API URL
-const sourceTwitterUrl = 'http://localhost:3001/twitter'; // Constant for API URL
 
 const CommentBlogSection: React.FC = () => {
   const [data, setData] = useState<{
@@ -19,88 +17,50 @@ const CommentBlogSection: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const fetchRedditData = async () => {
-    const response = await fetch(sourceRedditUrl);
-
-    const result = await response.json();
-    const serializedResponse = result.map((item: any) => ({
-      id: item.id,
-      content: item.content,
-      source: 'reddit',
-    }));
-    return serializedResponse;
-  };
-
-
-  const fetchTwitterData = async () => {
-    const response = await fetch(sourceTwitterUrl);
-
-    const result = await response.json();
-    const serializedResponse = result.map((item: any) => ({
-      id: item.id,
-      content: item.twitter_content,
-      source: 'twitter',
-    }));
-    return serializedResponse;
-  };
-
-  const deleteComment = async (id: string, source: string) => {
-    try {
-      setIsLoading(true);
-      await fetch(`${source === 'twitter' ? sourceTwitterUrl : sourceRedditUrl}/${id}`, {
-        method: 'DELETE',
-      });
-      setData((prevData) => prevData.filter((comment) => comment.id !== id));
-      setIsLoading(false);
-    } catch (error) {
-      setError('Error deleting comment.');
-      setIsLoading(false);
-    }
-  };
-
-  const editComment = async (id: string, content: string, source: string) => {
-    try {
-      setIsLoading(true);
-      await fetch(`${source === 'twitter' ? sourceTwitterUrl : sourceRedditUrl}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content }),
-      });
-      setData((prevData) =>
-        prevData.map((comment) => {
-          if (comment.id === id) {
-            return { ...comment, content };
-          }
-          return comment;
-        })
-      );
-      setIsLoading(false);
-    } catch (error) {
-      setError('Error editing comment.');
-      setIsLoading(false);
-    }
-  };
-
   const loadData = async () => {
     setIsLoading(true)
     setError('')
-
     try {
-
-      const redditData = await fetchRedditData();
-      const twitterData = await fetchTwitterData();
-
-      console.log(redditData, twitterData);
-
-      setData([...redditData, ...twitterData])
-    } catch {
+      const comments = await listComments(["reddit", "twitter"])
+      setData(comments)
+    } catch (err) {
       setError("Error fetching comment data")
     } finally {
       setIsLoading(false)
     }
+  };
 
+  const handleDeleteComment = async (id: string, source: string) => {
+    setIsLoading(true);
+    setError('')
+    try {
+      await deleteComment(id, source);
+      const updatedData = data.filter((comment) => comment.id !== id)
+      setData(updatedData);
+    } catch (err) {
+      setError('Error deleting comment.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditComment = async (id: string, content: string, source: string) => {
+    setIsLoading(true);
+    setError('')
+    try {
+      const newComment = await editComment(id, content, source);
+      const updatedData = data.map((comment) => {
+        if (comment.id === id) {
+          return newComment;
+        }
+        return comment;
+      })
+      setData(updatedData);
+    } catch (err) {
+      setError('Error editing comment.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const sortData = (data: any) => {
@@ -139,8 +99,8 @@ const CommentBlogSection: React.FC = () => {
               <div key={item.id}>
                 <h4>{item.author}</h4>
                 <p>{item.content}</p>
-                <button onClick={() => deleteComment(item.id, item.source)}>Delete</button>
-                <button onClick={() => editComment(item.id, 'New Content', item.source)}>Edit</button>
+                <button onClick={() => handleDeleteComment(item.id, item.source)}>Delete</button>
+                <button onClick={() => handleEditComment(item.id, 'New Content', item.source)}>Edit</button>
               </div>
             ))
           }
