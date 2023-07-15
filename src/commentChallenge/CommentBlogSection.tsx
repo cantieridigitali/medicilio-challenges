@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from "./CommentBlogSection.module.scss"
 
 const sourceRedditUrl = 'http://localhost:3001/reddit'; // Constant for API URL
 const sourceTwitterUrl = 'http://localhost:3001/twitter'; // Constant for API URL
@@ -14,11 +15,9 @@ const CommentBlogSection: React.FC = () => {
     id: string;
     name: string;
     email: string;
-  }>();
+  }>(); // user data shouldn't be in component state, but in app wide store (useContext or redux...)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const fetchRedditData = async () => {
     const response = await fetch(sourceRedditUrl);
@@ -110,68 +109,41 @@ const CommentBlogSection: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
     loadData();
   }, []);
 
-  useEffect(() => {
-    setIsMobile(windowWidth < 768);
-  }, [windowWidth])
-
   const sortedData = sortData(data);
 
-  const renderData = () => {
-    if (isMobile) {
-      return sortedData.map((item: {
-        id: string;
-        content: string;
-        author: string;
-        source: string;
-      }) => (
-        <div key={item.id}>
-          <h4>{item.author}</h4>
-          <p>{item.content}</p>
-          <button onClick={() => deleteComment(item.id, item.source)}>Delete</button>
-        </div>
-      ));
-    } else {
-      return sortedData.map((item: {
-        id: string;
-        content: string;
-        author: string;
-        source: string
-      }) => (
-        <div key={item.id}>
-          <h4>{item.author}</h4>
-          <p>{item.content}</p>
-          <button onClick={() => deleteComment(item.id, item.source)}>Delete</button>
-          <button onClick={() => editComment(item.id, 'New Content', item.source)}>Edit</button>
-        </div>
-      ));
-    }
-  };
-
-
+  if (isLoading) {
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <div>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : error ? (
+      {error ? (
         <p>{error}</p>
       ) : (
         <>
           <h2>Comments</h2>
-          {renderData()}
+          {
+            sortedData.map((item: {
+              id: string;
+              content: string;
+              author: string;
+              source: string
+            }) => (
+              <div key={item.id}>
+                <h4>{item.author}</h4>
+                <p>{item.content}</p>
+                <button onClick={() => deleteComment(item.id, item.source)}>Delete</button>
+                <button onClick={() => editComment(item.id, 'New Content', item.source)}>Edit</button>
+              </div>
+            ))
+          }
         </>
       )}
     </div>
