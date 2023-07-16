@@ -33,7 +33,11 @@ export const deleteComment = async (id: string, source: string) => {
   return response;
 };
 
-export const editComment = async (id: string, newComment: string, source: string) => {
+export const editComment = async (
+  id: string,
+  newComment: string,
+  source: string
+) => {
   const response = await sourceMap[source].edit(id, newComment);
   return response;
 };
