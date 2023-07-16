@@ -1,0 +1,21 @@
+{
+    "reddit": [
+        {
+            "id": 1,
+            "author_full_name": "John Doe",
+            "created_at": "2023-07-13T19:41:31",
+            "content": "This is an awesome comment on Reddit!"
+        }
+    ],
+    "twitter": [
+        {
+            "id": 2,
+            "author": {
+                "first_name": "John",
+                "last_name": "Doe"
+            },
+            "created_at": "2023-07-13T19:32:20",
+            "twitter_content": "This is a totally cool comment on Twitter!"
+        }
+    ]
+}
